@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: product_mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - product_network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: product_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - product_network
+
+  product-api:
+    build:
+      context: .
+      dockerfile: Product.API/Dockerfile
+    container_name: product_api
+    ports:
+      - "8080:8080"
+    environment:
+      MongoDb__ConnectionString: mongodb://root:password@mongodb:27017
+      MongoDb__DatabaseName: products_db
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: 5672
+      RabbitMq__UserName: guest
+      RabbitMq__Password: guest
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - product_network
+
+volumes:
+  mongodb_data:
+  rabbitmq_data:
+
+networks:
+  product_network:
+    driver: bridge

@@ -1,0 +1,264 @@
+{
+  "info": {
+    "name": "Product Service API",
+    "description": "Collection for testing Product Service endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5070/api/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "products"]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5070/api/products/{{product_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "products", "{{product_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Products by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5070/api/products/category/Electronics",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "products", "category", "Electronics"]
+            }
+          }
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5070/api/products/search?q=iphone",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "products", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "iphone"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"iPhone 15 Pro\",\n    \"description\": \"Latest flagship smartphone\",\n    \"category\": \"Electronics\",\n    \"price\": 999.99,\n    \"stock\": 50,\n    \"imageUrl\": \"https://example.com/iphone15.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5070/api/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "products"]
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"iPhone 15 Pro Max\",\n    \"description\": \"Updated flagship smartphone\",\n    \"category\": \"Electronics\",\n    \"price\": 1099.99,\n    \"stock\": 45,\n    \"imageUrl\": \"https://example.com/iphone15pro.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5070/api/products/{{product_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "products", "{{product_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5070/api/products/{{product_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "products", "{{product_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Decrement Stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"quantity\": 5\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5070/api/products/{{product_id}}/decrement-stock",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "products", "{{product_id}}", "decrement-stock"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5070/api/categories",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5070/api/categories/{{category_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "categories", "{{category_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Electronics\",\n    \"description\": \"Electronic devices and gadgets\",\n    \"imageUrl\": \"https://example.com/electronics.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5070/api/categories",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Electronics & Gadgets\",\n    \"description\": \"Updated electronic devices and gadgets\",\n    \"imageUrl\": \"https://example.com/electronics-updated.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5070/api/categories/{{category_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "categories", "{{category_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5070/api/categories/{{category_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5070",
+              "path": ["api", "categories", "{{category_id}}"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "product_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "category_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

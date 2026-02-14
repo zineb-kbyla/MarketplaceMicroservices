@@ -1,0 +1,63 @@
+# Rider
+.idea/
+*.sln.iml
+*.swp
+
+# Build results
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.tmp
+*.temp
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# Package
+.nuget/
+NuGet.Config
+nuget.lock.json
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Testing
+coverage/
+TestResults/
+
+# Build output
+dist/
+build/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# IDEs
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
