@@ -37,7 +37,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running unit tests...'
-                bat 'dotnet test Product.API/Tests/Unit/ProductServiceTests.cs --no-build --configuration Release --logger="trx;LogFileName=test-results.trx"'
+                bat 'dotnet test Product.API/Product.API.csproj --no-build --configuration Release --logger="trx;LogFileName=test-results.trx"'
             }
 
             post {
