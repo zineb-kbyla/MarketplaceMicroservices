@@ -23,21 +23,21 @@ pipeline {
         stage('Restore') {
             steps {
                 echo 'Restoring NuGet packages...'
-                sh 'dotnet restore'
+                bat 'dotnet restore'
             }
         }
 
         stage('Build') {
             steps {
                 echo 'Building the project...'
-                sh 'dotnet build --no-restore --configuration Release'
+                bat 'dotnet build --no-restore --configuration Release'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running unit tests...'
-                sh 'dotnet test Product.API/Tests/Unit/ProductServiceTests.cs --no-build --configuration Release --logger="trx;LogFileName=test-results.trx" || true'
+                bat 'dotnet test Product.API/Tests/Unit/ProductServiceTests.cs --no-build --configuration Release --logger="trx;LogFileName=test-results.trx"'
             }
 
             post {
@@ -50,7 +50,7 @@ pipeline {
         stage('Publish') {
             steps {
                 echo 'Publishing the application...'
-                sh 'dotnet publish Product.API/Product.API.csproj --no-build --configuration Release --output ./publish'
+                bat 'dotnet publish Product.API/Product.API.csproj --no-build --configuration Release --output ./publish'
             }
 
             post {
@@ -63,8 +63,8 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Building Docker image...'
-                sh 'docker build -f Product.API/Dockerfile -t product-service:${BUILD_NUMBER} .'
-                sh 'docker tag product-service:${BUILD_NUMBER} product-service:latest'
+                bat 'docker build -f Product.API/Dockerfile -t product-service:%BUILD_NUMBER% .'
+                bat 'docker tag product-service:%BUILD_NUMBER% product-service:latest'
             }
         }
     }
