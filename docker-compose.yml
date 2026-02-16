@@ -3,7 +3,7 @@ version: '3.8'
 services:
   mongodb:
     image: mongo:7.0
-    container_name: product_mongodb
+    container_name: marketplace_mongodb
     ports:
       - "27017:27017"
     environment:
@@ -12,11 +12,16 @@ services:
     volumes:
       - mongodb_data:/data/db
     networks:
-      - product_network
+      - marketplace_network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3.13-management
-    container_name: product_rabbitmq
+    container_name: marketplace_rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -26,7 +31,12 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
-      - product_network
+      - marketplace_network
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   product-api:
     build:
@@ -34,8 +44,10 @@ services:
       dockerfile: Product.API/Dockerfile
     container_name: product_api
     ports:
-      - "8080:8080"
+      - "5001:5001"
     environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_URLS: http://+:5001
       MongoDb__ConnectionString: mongodb://root:password@mongodb:27017
       MongoDb__DatabaseName: products_db
       RabbitMq__HostName: rabbitmq
@@ -43,15 +55,44 @@ services:
       RabbitMq__UserName: guest
       RabbitMq__Password: guest
     depends_on:
-      - mongodb
-      - rabbitmq
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
-      - product_network
+      - marketplace_network
+
+  order-api:
+    build:
+      context: .
+      dockerfile: Order.API/Dockerfile
+    container_name: order_api
+    ports:
+      - "5002:5002"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_URLS: http://+:5002
+      MongoDb__ConnectionString: mongodb://root:password@mongodb:27017
+      MongoDb__DatabaseName: marketplace_order
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: 5672
+      RabbitMq__UserName: guest
+      RabbitMq__Password: guest
+      Services__ProductService__Url: http://product-api:5001
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      product-api:
+        condition: service_started
+    networks:
+      - marketplace_network
 
 volumes:
   mongodb_data:
   rabbitmq_data:
 
 networks:
-  product_network:
+  marketplace_network:
     driver: bridge
