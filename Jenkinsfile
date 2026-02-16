@@ -15,7 +15,7 @@ pipeline {
     parameters {
         choice(
             name: 'SERVICE',
-            choices: ['ALL', 'Product.API', 'Order.API'],
+            choices: ['ALL', 'Product.API', 'Order.API', 'Recommendation.API'],
             description: 'Sélectionner le microservice à builder'
         )
         booleanParam(
@@ -69,6 +69,16 @@ pipeline {
                         bat 'dotnet build Order.API/Order.API.csproj --no-restore --configuration Release'
                     }
                 }
+
+                stage('Build Recommendation.API') {
+                    when {
+                        expression { params.SERVICE == 'ALL' || params.SERVICE == 'Recommendation.API' }
+                    }
+                    steps {
+                        echo 'Building Recommendation.API...'
+                        bat 'dotnet build Recommendation.API/Recommendation.API.csproj --no-restore --configuration Release'
+                    }
+                }
             }
         }
 
@@ -91,6 +101,16 @@ pipeline {
                     steps {
                         echo 'Running Order.API tests...'
                         bat 'dotnet test Order.API/Order.API.csproj --no-build --configuration Release --logger="trx;LogFileName=order-test-results.trx"'
+                    }
+                }
+
+                stage('Test Recommendation.API') {
+                    when {
+                        expression { params.SERVICE == 'ALL' || params.SERVICE == 'Recommendation.API' }
+                    }
+                    steps {
+                        echo 'Running Recommendation.API tests...'
+                        bat 'dotnet test Recommendation.API/Recommendation.API.csproj --no-build --configuration Release --logger="trx;LogFileName=recommendation-test-results.trx"'
                     }
                 }
             }
@@ -123,6 +143,16 @@ pipeline {
                         bat 'dotnet publish Order.API/Order.API.csproj --no-build --configuration Release --output ./publish/order-api'
                     }
                 }
+
+                stage('Publish Recommendation.API') {
+                    when {
+                        expression { params.SERVICE == 'ALL' || params.SERVICE == 'Recommendation.API' }
+                    }
+                    steps {
+                        echo 'Publishing Recommendation.API...'
+                        bat 'dotnet publish Recommendation.API/Recommendation.API.csproj --no-build --configuration Release --output ./publish/recommendation-api'
+                    }
+                }
             }
 
             post {
@@ -153,6 +183,17 @@ pipeline {
                         echo 'Building Order.API Docker image...'
                         bat 'docker build -f Order.API/Dockerfile -t order-service:%BUILD_NUMBER% .'
                         bat 'docker tag order-service:%BUILD_NUMBER% order-service:latest'
+                    }
+                }
+
+                stage('Docker Recommendation.API') {
+                    when {
+                        expression { params.SERVICE == 'ALL' || params.SERVICE == 'Recommendation.API' }
+                    }
+                    steps {
+                        echo 'Building Recommendation.API Docker image...'
+                        bat 'docker build -f Recommendation.API/Dockerfile -t recommendation-service:%BUILD_NUMBER% .'
+                        bat 'docker tag recommendation-service:%BUILD_NUMBER% recommendation-service:latest'
                     }
                 }
             }
@@ -203,6 +244,19 @@ pipeline {
                         retry(3) {
                             sleep 5
                             bat 'curl -f http://localhost:5002/api/orders || exit /b 0'
+                        }
+                    }
+                }
+
+                stage('Health Check Recommendation.API') {
+                    when {
+                        expression { params.SERVICE == 'ALL' || params.SERVICE == 'Recommendation.API' }
+                    }
+                    steps {
+                        echo 'Health check Recommendation.API...'
+                        retry(3) {
+                            sleep 5
+                            bat 'curl -f http://localhost:5003/api/recommendations/trending || exit /b 0'
                         }
                     }
                 }
