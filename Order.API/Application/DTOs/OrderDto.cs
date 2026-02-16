@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Order.API.Domain.Enums;
 
 namespace Order.API.Application.DTOs
@@ -47,10 +48,21 @@ namespace Order.API.Application.DTOs
 
     public class CreateOrderDto
     {
+        [Required(ErrorMessage = "UserId is required")]
+        [MinLength(1, ErrorMessage = "UserId cannot be empty")]
         public string UserId { get; set; }
+        
+        [Required(ErrorMessage = "UserName is required")]
         public string UserName { get; set; }
+        
+        [Required(ErrorMessage = "Items are required")]
+        [MinLength(1, ErrorMessage = "At least one item is required")]
         public List<OrderItemDto> Items { get; set; }
+        
+        [Required(ErrorMessage = "Shipping address is required")]
         public AddressDto ShippingAddress { get; set; }
+        
+        [Required(ErrorMessage = "Payment info is required")]
         public PaymentDto PaymentInfo { get; set; }
     }
 

@@ -38,6 +38,28 @@ services:
       timeout: 5s
       retries: 5
 
+  neo4j:
+    image: neo4j:5.23
+    container_name: marketplace_neo4j
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+    environment:
+      NEO4J_AUTH: neo4j/password
+      NEO4J_apoc_export_allow__all__writes: "true"
+      NEO4J_apoc_import_file_enabled: "true"
+      NEO4J_apoc_import_file_use__neo4j__config: "false"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    networks:
+      - marketplace_network
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "password", "RETURN 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   product-api:
     build:
       context: .
@@ -89,9 +111,38 @@ services:
     networks:
       - marketplace_network
 
+  recommendation-api:
+    build:
+      context: .
+      dockerfile: Recommendation.API/Dockerfile
+    container_name: recommendation_api
+    ports:
+      - "5003:8004"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_URLS: http://+:8004
+      Neo4j__Uri: bolt://neo4j:7687
+      Neo4j__Username: neo4j
+      Neo4j__Password: password
+      Neo4j__Database: neo4j
+      Neo4j__ConnectionTimeout: 30
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Port: 5672
+      RabbitMQ__Username: guest
+      RabbitMQ__Password: guest
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - marketplace_network
+
 volumes:
   mongodb_data:
   rabbitmq_data:
+  neo4j_data:
+  neo4j_logs:
 
 networks:
   marketplace_network:

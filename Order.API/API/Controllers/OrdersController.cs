@@ -157,7 +157,7 @@ namespace Order.API.API.Controllers
         /// <param name="id">Order ID</param>
         /// <returns>Success status</returns>
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> CancelOrder(string id)
@@ -171,7 +171,7 @@ namespace Order.API.API.Controllers
                     return NotFound(new { message = $"Order with ID {id} not found" });
                 }
 
-                return Ok(new { message = "Order cancelled successfully" });
+                return NoContent();
             }
             catch (KeyNotFoundException)
             {

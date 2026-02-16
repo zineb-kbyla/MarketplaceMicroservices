@@ -17,7 +17,8 @@ namespace Order.API.Application
                 .ForMember(dest => dest.TotalAmount, opt => opt.Ignore())
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Domain.Enums.OrderStatus.Pending))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.Items)); // Map Items to OrderItems
 
             // OrderItem mappings
             CreateMap<OrderItem, OrderItemDto>().ReverseMap();
