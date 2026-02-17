@@ -245,15 +245,17 @@ pipeline {
                 expression { params.DEPLOY == true }
             }
             steps {
-                echo 'Deploying services with docker-compose...'
-                bat 'docker-compose down'
-                bat 'docker-compose up -d'
+                echo '🐳 Deploying services with docker-compose...'
+                bat 'docker-compose down --remove-orphans -v'
+                echo '⏳ Waiting 5 seconds before restart...'
+                sleep 5
+                bat 'docker-compose up -d --force-recreate'
             }
 
             post {
                 success {
-                    echo 'Waiting for services to start...'
-                    sleep 15
+                    echo '⏳ Waiting 20 seconds for services to start...'
+                    sleep 20
                 }
             }
         }
