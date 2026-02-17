@@ -1,41 +1,63 @@
-# Marketplace Microservices - .NET 10.0
+# 🏪 Marketplace Microservices - .NET 10.0
 
-Une architecture de microservices complète pour une plateforme de marketplace moderne utilisant .NET 10.0, MongoDB et RabbitMQ.
+Architecture complète de **microservices avec API Gateway centralisé** pour une plateforme marketplace moderne utilisant **.NET 10.0**, **MongoDB**, **RabbitMQ**, et **Neo4j**.
 
-## Architecture Globale
+## 📋 Vue d'Ensemble du Projet
+
+Ce projet implémente une plateforme e-commerce réelle avec une architecture microservices où:
+- ✅ Un **API Gateway unique** (YARP) gère toutes les requêtes externes
+- ✅ Trois **services métier indépendants** (Product, Order, Recommendation)
+- ✅ **Communication asynchrone** via message bus RabbitMQ
+- ✅ **Isolation des données** (MongoDB pour Product/Order, Neo4j pour Recommendation)
+- ✅ **Scalabilité** - Chaque service peut être déployé indépendamment
+
+---
+
+## 🏗️ Architecture Globale
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    API GATEWAY (Optional)                       │
-│                    (Port 80/443)                                │
-└──────┬──────────────────────────┬──────────────────────────────┘
-       │                          │
-       ▼                          ▼
-┌──────────────────┐      ┌──────────────────┐
-│  Product Service │      │  Order Service   │
-│  (Port 5001)     │      │  (Port 5002)     │
-└──────┬───────────┘      └──────┬───────────┘
-       │                         │
-       │    Shared Services      │
-       │                         │
-       ├─────────┬───────────────┤
-       │         │               │
-       ▼         ▼               ▼
-   ┌────────────────────────────────────┐
-   │      MongoDB (Port 27017)          │
-   │   Databases:                       │
-   │   - marketplace_product            │
-   │   - marketplace_order              │
-   └────────────────────────────────────┘
-       
-       │  Events
-       │
-       ▼
-   ┌────────────────────────────────────┐
-   │   RabbitMQ (Port 5672)             │
-   │   Management UI (Port 15672)       │
-   └────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│                     🚪 API GATEWAY (YARP)                               │
+│                  🔗 Point d'Entrée Unique (Port 5000)                    │
+│              Routage centralisé • Logging • Health Checks                │
+│                                                                            │
+└──────────┬─────────────────────────┬──────────────────┬───────────────────┘
+           │                         │                  │
+           ▼                         ▼                  ▼
+    ┌─────────────────┐    ┌─────────────────┐   ┌──────────────────┐
+    │ Product Service │    │  Order Service  │   │ Recommendation   │
+    │  (Port 5001)    │    │  (Port 5002)    │   │ (Port 8004)      │
+    │  • Catalogue    │    │  • Commandes    │   │ • Algorithmes ML │
+    │  • Stock        │    │  • Paiements    │   │ • User Profiles  │
+    │  • Pricing      │    │  • Suivi        │   │ • Suggestions    │
+    └────────┬────────┘    └────────┬────────┘   └────────┬─────────┘
+             │                      │                     │
+             └──────────┬───────────┴─────────┬───────────┘
+                        │                     │
+         ┌──────────────┴────────────┐    ┌───┴──────────────┐
+         │                           │    │                  │
+         ▼                           ▼    ▼                  ▼
+    ┌──────────────┐          ┌──────────────────┐    ┌──────────────┐
+    │   MongoDB    │          │   RabbitMQ       │    │   Neo4j      │
+    │  (27017)     │          │ (5672, 15672)    │    │ (7687,7474)  │
+    │ • Products   │          │  Message Bus     │    │ • User Graph │
+    │ • Orders     │          │  • Events        │    │ • Relations  │
+    └──────────────┘          └──────────────────┘    └──────────────┘
 ```
+
+### 🔷 Topologie Détaillée:
+| Composant | Port | Rôle | Accès |
+|-----------|------|------|-------|
+| **API Gateway** | 5000 | Point d'entrée unique pour les clients externes | Public |
+| **Product Service** | 5001 | Service produits & catalogue | Interne (via Gateway) |
+| **Order Service** | 5002 | Service commandes & paiements | Interne (via Gateway) |
+| **Recommendation Service** | 8004 | Système de recommandations IA | Interne (via Gateway) |
+| **MongoDB** | 27017 | Base de données MongoDB | Interne (Services) |
+| **RabbitMQ** | 5672 | Bus de messages | Interne (Services) |
+| **RabbitMQ UI** | 15672 | Interface de gestion RabbitMQ | Interne |
+| **Neo4j** | 7687 | Base de graphes Neo4j | Interne (Services) |
+| **Neo4j Browser** | 7474 | Interface Neo4j | Interne |
 
 ## Services
 
