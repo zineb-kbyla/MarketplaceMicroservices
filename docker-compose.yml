@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mongodb:
     image: mongo:7.0
@@ -14,10 +12,11 @@ services:
     networks:
       - marketplace_network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
   rabbitmq:
     image: rabbitmq:3.13-management
@@ -33,10 +32,11 @@ services:
     networks:
       - marketplace_network
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 10s
+      retries: 10
+      start_period: 15s
 
   neo4j:
     image: neo4j:5.23
@@ -55,7 +55,31 @@ services:
     networks:
       - marketplace_network
     healthcheck:
-      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "password", "RETURN 1"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7474"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+
+  # ====== API GATEWAY (Point d'entrée unique) ======
+  api-gateway:
+    build:
+      context: .
+      dockerfile: APIGateway/Dockerfile
+    container_name: api_gateway
+    ports:
+      - "5000:5000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_URLS: http://+:5000
+    depends_on:
+      - product-api
+      - order-api
+      - recommendation-api
+    networks:
+      - marketplace_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 10s
       timeout: 5s
       retries: 5

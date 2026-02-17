@@ -83,6 +83,29 @@
           }
         }
       },
+      "Microsoft.AspNetCore.Mvc.Testing/10.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.TestHost": "10.0.1",
+          "Microsoft.Extensions.DependencyModel": "10.0.1"
+        },
+        "compile": {
+          "lib/net10.0/Microsoft.AspNetCore.Mvc.Testing.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Mvc.Testing.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ],
+        "build": {
+          "buildTransitive/net10.0/Microsoft.AspNetCore.Mvc.Testing.targets": {}
+        }
+      },
       "Microsoft.AspNetCore.OpenApi/10.0.1": {
         "type": "package",
         "dependencies": {
@@ -105,6 +128,22 @@
           "build/Microsoft.AspNetCore.OpenApi.targets": {}
         }
       },
+      "Microsoft.AspNetCore.TestHost/10.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/Microsoft.AspNetCore.TestHost.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.TestHost.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Microsoft.CodeCoverage/18.0.1": {
         "type": "package",
         "compile": {
@@ -116,6 +155,22 @@
         "build": {
           "build/netstandard2.0/Microsoft.CodeCoverage.props": {},
           "build/netstandard2.0/Microsoft.CodeCoverage.targets": {}
+        }
+      },
+      "Microsoft.Extensions.DependencyModel/10.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/Microsoft.Extensions.DependencyModel.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.DependencyModel.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
         }
       },
       "Microsoft.IdentityModel.Abstractions/8.14.0": {
@@ -788,6 +843,25 @@
         "mediatr.contracts.nuspec"
       ]
     },
+    "Microsoft.AspNetCore.Mvc.Testing/10.0.1": {
+      "sha512": "84aSUoB++qrL9mlkAT1ybV9KQ5bv7sbpx2B5uo9se0ryYjNPIeiuknVy7r0FOwRk8T58PYybhIBa7WOkdMgOZQ==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.mvc.testing/10.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "build/net10.0/Microsoft.AspNetCore.Mvc.Testing.targets",
+        "buildTransitive/net10.0/Microsoft.AspNetCore.Mvc.Testing.targets",
+        "lib/net10.0/Microsoft.AspNetCore.Mvc.Testing.dll",
+        "lib/net10.0/Microsoft.AspNetCore.Mvc.Testing.xml",
+        "microsoft.aspnetcore.mvc.testing.10.0.1.nupkg.sha512",
+        "microsoft.aspnetcore.mvc.testing.nuspec",
+        "tasks/netstandard2.0/Microsoft.AspNetCore.Mvc.Testing.Tasks.dll"
+      ]
+    },
     "Microsoft.AspNetCore.OpenApi/10.0.1": {
       "sha512": "gMY53EggRIFawhue66GanHcm1Tcd0+QzzMwnMl60LrEoJhGgzA9qAbLx6t/ON3hX4flc2NcEbTK1Z5GCLYHcwA==",
       "type": "package",
@@ -804,6 +878,22 @@
         "lib/net10.0/Microsoft.AspNetCore.OpenApi.xml",
         "microsoft.aspnetcore.openapi.10.0.1.nupkg.sha512",
         "microsoft.aspnetcore.openapi.nuspec"
+      ]
+    },
+    "Microsoft.AspNetCore.TestHost/10.0.1": {
+      "sha512": "Vvos4CyBam5dCsH3eD1c9MQI4ESWwzNSJsToFz4i6NmfPsaySzNSiv0QYRmSAAIBXb8GXxPmuy42TkIrw2xCzQ==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.testhost/10.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net10.0/Microsoft.AspNetCore.TestHost.dll",
+        "lib/net10.0/Microsoft.AspNetCore.TestHost.xml",
+        "microsoft.aspnetcore.testhost.10.0.1.nupkg.sha512",
+        "microsoft.aspnetcore.testhost.nuspec"
       ]
     },
     "Microsoft.CodeCoverage/18.0.1": {
@@ -886,6 +976,35 @@
         "lib/net8.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll",
         "microsoft.codecoverage.18.0.1.nupkg.sha512",
         "microsoft.codecoverage.nuspec"
+      ]
+    },
+    "Microsoft.Extensions.DependencyModel/10.0.1": {
+      "sha512": "IiWPd4j8JLNjSkyXl5hvJwX2ZENDVQVPDHYgZmYdw8+YkY2xp9iQt0vjdnAQZLpo/ipeW1xgOqfSBEnivKWPYQ==",
+      "type": "package",
+      "path": "microsoft.extensions.dependencymodel/10.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/Microsoft.Extensions.DependencyModel.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/Microsoft.Extensions.DependencyModel.targets",
+        "lib/net10.0/Microsoft.Extensions.DependencyModel.dll",
+        "lib/net10.0/Microsoft.Extensions.DependencyModel.xml",
+        "lib/net462/Microsoft.Extensions.DependencyModel.dll",
+        "lib/net462/Microsoft.Extensions.DependencyModel.xml",
+        "lib/net8.0/Microsoft.Extensions.DependencyModel.dll",
+        "lib/net8.0/Microsoft.Extensions.DependencyModel.xml",
+        "lib/net9.0/Microsoft.Extensions.DependencyModel.dll",
+        "lib/net9.0/Microsoft.Extensions.DependencyModel.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.DependencyModel.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.DependencyModel.xml",
+        "microsoft.extensions.dependencymodel.10.0.1.nupkg.sha512",
+        "microsoft.extensions.dependencymodel.nuspec",
+        "useSharedDesignerContext.txt"
       ]
     },
     "Microsoft.IdentityModel.Abstractions/8.14.0": {
@@ -1524,6 +1643,7 @@
       "AutoMapper >= 12.0.1",
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 12.0.1",
       "MediatR >= 14.0.0",
+      "Microsoft.AspNetCore.Mvc.Testing >= 10.0.1",
       "Microsoft.AspNetCore.OpenApi >= 10.0.1",
       "Microsoft.NET.Test.Sdk >= 18.0.1",
       "MongoDB.Driver >= 3.6.0",
@@ -1588,6 +1708,10 @@
           "MediatR": {
             "target": "Package",
             "version": "[14.0.0, )"
+          },
+          "Microsoft.AspNetCore.Mvc.Testing": {
+            "target": "Package",
+            "version": "[10.0.1, )"
           },
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",

@@ -1,0 +1,522 @@
+{
+  "info": {
+    "name": "Order.API - Docker",
+    "description": "Collection complète pour tester Order.API avec Docker",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5002",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "docker_user_001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Get All Orders",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is an array\", function () {",
+              "    pm.expect(pm.response.json()).to.be.an('array');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders"]
+        },
+        "description": "Récupère toutes les commandes"
+      },
+      "response": []
+    },
+    {
+      "name": "2. Create Order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"Order created with ID\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.id).to.exist;",
+              "    pm.collectionVariables.set(\"orderId\", jsonData.id);",
+              "});",
+              "",
+              "pm.test(\"Total amount is correct\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.totalAmount).to.eql(2579.98);",
+              "});",
+              "",
+              "pm.test(\"Card number is masked\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.paymentInfo.cardNumber).to.include(\"****\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"userName\": \"Docker Test User\",\n  \"items\": [\n    {\n      \"productId\": \"prod001\",\n      \"productName\": \"MacBook Pro 16\",\n      \"quantity\": 1,\n      \"unitPrice\": 2499.99\n    },\n    {\n      \"productId\": \"prod002\",\n      \"productName\": \"Magic Mouse\",\n      \"quantity\": 1,\n      \"unitPrice\": 79.99\n    }\n  ],\n  \"shippingAddress\": {\n    \"street\": \"456 Docker Lane\",\n    \"city\": \"Container City\",\n    \"state\": \"DC\",\n    \"country\": \"Dockerland\",\n    \"zipCode\": \"90210\",\n    \"phoneNumber\": \"+1555123456\"\n  },\n  \"paymentInfo\": {\n    \"paymentMethod\": \"CreditCard\",\n    \"cardName\": \"Docker Test\",\n    \"cardNumber\": \"4532123456789012\",\n    \"expiration\": \"12/26\",\n    \"cvv\": \"456\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders"]
+        },
+        "description": "Crée une nouvelle commande"
+      },
+      "response": []
+    },
+    {
+      "name": "3. Get Order By ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Order has correct ID\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"orderId\"));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/{{orderId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders", "{{orderId}}"]
+        },
+        "description": "Récupère une commande par son ID"
+      },
+      "response": []
+    },
+    {
+      "name": "4. Get Orders By User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is an array\", function () {",
+              "    pm.expect(pm.response.json()).to.be.an('array');",
+              "});",
+              "",
+              "pm.test(\"All orders belong to user\", function () {",
+              "    var orders = pm.response.json();",
+              "    orders.forEach(function(order) {",
+              "        pm.expect(order.userId).to.eql(pm.collectionVariables.get(\"userId\"));",
+              "    });",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/user/{{userId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders", "user", "{{userId}}"]
+        },
+        "description": "Récupère toutes les commandes d'un utilisateur"
+      },
+      "response": []
+    },
+    {
+      "name": "5. Update Status - Confirmed",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Success message received\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.include(\"updated successfully\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Confirmed\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/{{orderId}}/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders", "{{orderId}}", "status"]
+        },
+        "description": "Passe la commande au statut Confirmed"
+      },
+      "response": []
+    },
+    {
+      "name": "6. Update Status - Processing",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Processing\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/{{orderId}}/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders", "{{orderId}}", "status"]
+        },
+        "description": "Passe la commande au statut Processing"
+      },
+      "response": []
+    },
+    {
+      "name": "7. Update Status - Shipped",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Shipped\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/{{orderId}}/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders", "{{orderId}}", "status"]
+        },
+        "description": "Passe la commande au statut Shipped"
+      },
+      "response": []
+    },
+    {
+      "name": "8. Get Order Tracking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Has estimated delivery\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.estimatedDelivery).to.exist;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/{{orderId}}/tracking",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders", "{{orderId}}", "tracking"]
+        },
+        "description": "Récupère les informations de tracking"
+      },
+      "response": []
+    },
+    {
+      "name": "9. Update Status - Delivered",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Delivered\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/{{orderId}}/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders", "{{orderId}}", "status"]
+        },
+        "description": "Passe la commande au statut Delivered"
+      },
+      "response": []
+    },
+    {
+      "name": "10. Cancel Order (Create new first)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Success message received\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.include(\"cancelled successfully\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/{{orderId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders", "{{orderId}}"]
+        },
+        "description": "Annule une commande (seulement si Pending, Confirmed ou Processing)"
+      },
+      "response": []
+    },
+    {
+      "name": "[Test] Get Orders with Filter",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders?userId={{userId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders"],
+          "query": [
+            {
+              "key": "userId",
+              "value": "{{userId}}"
+            }
+          ]
+        },
+        "description": "Récupère les commandes filtrées par userId (query param)"
+      },
+      "response": []
+    },
+    {
+      "name": "[Test] Create Simple Order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"test_user_simple\",\n  \"userName\": \"Simple Test\",\n  \"items\": [\n    {\n      \"productId\": \"p1\",\n      \"productName\": \"Product 1\",\n      \"quantity\": 1,\n      \"unitPrice\": 10.00\n    }\n  ],\n  \"shippingAddress\": {\n    \"street\": \"123 Test St\",\n    \"city\": \"TestCity\",\n    \"state\": \"TC\",\n    \"country\": \"TestCountry\",\n    \"zipCode\": \"12345\",\n    \"phoneNumber\": \"+123456789\"\n  },\n  \"paymentInfo\": {\n    \"paymentMethod\": \"PayPal\",\n    \"cardName\": \"Test User\",\n    \"cardNumber\": \"4532123456789012\",\n    \"expiration\": \"12/25\",\n    \"cvv\": \"123\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orders"]
+        },
+        "description": "Crée une commande simple pour tests rapides"
+      },
+      "response": []
+    }
+  ]
+}
