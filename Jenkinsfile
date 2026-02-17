@@ -5,7 +5,8 @@ pipeline {
         timeout(time: 45, unit: 'MINUTES')
         timestamps()
         buildDiscarder(logRotator(numToKeepStr: '10'))
-        disableConcurrentBuilds()  // Empêcher les builds parallèles
+        disableConcurrentBuilds()
+        skipDefaultCheckout()  // Évite le checkout auto, on le fait après le nettoyage
     }
 
     environment {
@@ -27,17 +28,12 @@ pipeline {
     }
 
     stages {
-        stage('Clean Workspace') {
+        stage('Clean & Checkout') {
             steps {
                 echo '🧹 Nettoyage de la workspace Jenkins...'
+                // Nettoyer le répertoire entièrement
                 deleteDir()
-                sh 'rm -f .git/index.lock 2>/dev/null || true'
-                bat 'if exist .git\\index.lock del /F .git\\index.lock' 
-            }
-        }
-
-        stage('Checkout') {
-            steps {
+                
                 echo '📥 Checkout du code depuis GitHub...'
                 git branch: 'zineb',
                     url: 'https://github.com/zineb-kbyla/MarketplaceMicroservices.git'
