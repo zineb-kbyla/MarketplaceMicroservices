@@ -1,0 +1,388 @@
+{
+  "info": {
+    "_postman_id": "selective-microservices-test",
+    "name": "Marketplace - 2-3 Microservices Testing",
+    "description": "Collection for testing selective microservices combinations",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Setup",
+      "item": [
+        {
+          "name": "Health Check - APIGateway",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product Service",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "{{product_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Laptop\",\n  \"description\": \"High-end gaming laptop\",\n  \"category\": \"Electronics\",\n  \"price\": 1299.99,\n  \"stock\": 5,\n  \"imageUrl\": \"https://example.com/laptop.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"]
+            }
+          }
+        },
+        {
+          "name": "Record Product View (for Recommendation)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}/view",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "{{product_id}}", "view"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Order Service",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"userName\": \"John Doe\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"productName\": \"Laptop\",\n      \"quantity\": 1,\n      \"price\": 999.99\n    }\n  ],\n  \"shippingAddress\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"country\": \"USA\",\n    \"zipCode\": \"10001\",\n    \"phoneNumber\": \"555-1234\"\n  },\n  \"paymentInfo\": {\n    \"cardName\": \"John Doe\",\n    \"cardNumber\": \"4111111111111111\",\n    \"expiration\": \"12/25\",\n    \"cvv\": \"123\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders"]
+            }
+          }
+        },
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders"]
+            }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/orders/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", "{{order_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get User Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/orders/user/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", "user", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Shipped\",\n  \"notes\": \"Order has been shipped and on the way\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders/{{order_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", "{{order_id}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Customer requested cancellation\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders/{{order_id}}/cancel",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", "{{order_id}}", "cancel"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recommendation Service",
+      "item": [
+        {
+          "name": "Get Recommendations for User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recommendations/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "recommendations", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Trending Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recommendations/trending",
+              "host": ["{{base_url}}"],
+              "path": ["api", "recommendations", "trending"]
+            }
+          }
+        },
+        {
+          "name": "Get Top Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recommendations/top?limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["api", "recommendations", "top"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Integration Flows",
+      "item": [
+        {
+          "name": "Flow 1: Product + Order",
+          "item": [
+            {
+              "name": "1. Get all products",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products"]
+                }
+              }
+            },
+            {
+              "name": "2. Create an order with product",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"userName\": \"John Doe\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"productName\": \"Product Name\",\n      \"quantity\": 2,\n      \"price\": 99.99\n    }\n  ],\n  \"shippingAddress\": {\n    \"street\": \"123 Test St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"country\": \"USA\",\n    \"zipCode\": \"10001\",\n    \"phoneNumber\": \"555-0000\"\n  },\n  \"paymentInfo\": {\n    \"cardName\": \"John Doe\",\n    \"cardNumber\": \"4111111111111111\",\n    \"expiration\": \"12/25\",\n    \"cvv\": \"123\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/orders",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "orders"]
+                }
+              }
+            },
+            {
+              "name": "3. Check user orders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/orders/user/{{user_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "orders", "user", "{{user_id}}"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Flow 2: Product + Recommendation",
+          "item": [
+            {
+              "name": "1. Browse products",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products"]
+                }
+              }
+            },
+            {
+              "name": "2. User views a product",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{user_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/products/{{product_id}}/view",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products", "{{product_id}}", "view"]
+                }
+              }
+            },
+            {
+              "name": "3. Get personalized recommendations",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/recommendations/{{user_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "recommendations", "{{user_id}}"]
+                }
+              }
+            },
+            {
+              "name": "4. Get trending products",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/recommendations/trending",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "recommendations", "trending"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "product_id",
+      "value": "product1",
+      "type": "string"
+    },
+    {
+      "key": "order_id",
+      "value": "order_123",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "test_user_001",
+      "type": "string"
+    }
+  ]
+}
